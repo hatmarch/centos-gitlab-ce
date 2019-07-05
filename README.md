@@ -19,9 +19,11 @@ The included docker-build-output.txt file contains logs from a test image build.
 
 ### Using this base image to create a configured GitLab instance for yourself
 
-This base image can be used to create an image configured to match your local instance.
+This base image can be used to create an image configured to match your local instance. I have hosted an image at https://cloud.docker.com/repository/docker/tyrell/centos-gitlab-ce at the time of writing. Please check the image TAG for the GitLab CE version being used.
 
-  1. Configure GitLab for your system by using your ownw /etc/gitlab/gitlab.rb file
+My recommended option is to build this Docker file to get the latest GitLab CE baked in to a new image and host it in your repo. Use another Dockerfile to copy your GitLab configurations and other modifications. This will keep the GitLab base installation de-coupled from your environment specific configurations. With this option, you will be able to patch GitLab independently, for most updates.
+
+  1. Configure GitLab for your system by using your own /etc/gitlab/gitlab.rb file
   2. Run reconfigure.
 
       `gitlab-ctl reconfigure`    
