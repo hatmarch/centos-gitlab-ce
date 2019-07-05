@@ -2,8 +2,6 @@
 
 This project contains a Docker image that can be used as a base image to create a new Docker image customised for your environment.
 
-The included docker-build-output.txt file contains logs from a test image build.
-
 
 ### Building the Docker image yourself and hosting it
 
