@@ -8,11 +8,22 @@ This project contains a Docker image that can be used as a base image to create 
   1. Clone this repository.
   2. Build the Docker image.
 
-     `docker build -t <your-docker-repo>/centos-gitlab-ce .`
+     `docker build -t <your-docker-repo>/centos-gitlab-ce:latest .`
 
   3. Deploy the image to your repository
 
      `docker push <your-docker-repo>/centos-gitlab-ce:latest`
+
+
+### Running this image for verification and troubleshooting
+
+This image is not intended to be run as a GitLab instance, since the configuration is left untouched as is. However, if you want to run the image to inspect the GitLab installation and the container environment, you can do so by running the following command.
+
+    `docker run -i -t tyrell/centos-gitlab-ce:latest /bin/bash`
+
+Once inside the container, gitlab-ctl command can be used to verify the defaul configuration.
+
+    `gitlab-ctl show-config` or `vi /opt/gitlab/etc/gitlab.rb.template`
 
 
 ### Using this base image to create a configured GitLab instance for yourself
