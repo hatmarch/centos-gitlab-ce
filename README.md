@@ -23,11 +23,7 @@ This image is not intended to be run as a GitLab instance, since the configurati
 
 Once inside the container, gitlab-ctl command can be used to verify the default configuration.
 
-      `gitlab-ctl show-config`
-
-      or
-
-      `vi /opt/gitlab/etc/gitlab.rb.template`
+      `gitlab-ctl show-config` or `vi /opt/gitlab/etc/gitlab.rb.template`
 
 
 ### Using this base image to create a configured GitLab instance for yourself
