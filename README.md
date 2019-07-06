@@ -21,7 +21,7 @@ This image is not intended to be run as a GitLab instance, since the configurati
 
     `docker run -i -t tyrell/centos-gitlab-ce:latest /bin/bash`
 
-Once inside the container, gitlab-ctl command can be used to verify the defaul configuration.
+Once inside the container, gitlab-ctl command can be used to verify the default configuration.
 
     `gitlab-ctl show-config` or `vi /opt/gitlab/etc/gitlab.rb.template`
 
