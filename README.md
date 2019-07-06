@@ -23,7 +23,11 @@ This image is not intended to be run as a GitLab instance, since the configurati
 
 Once inside the container, gitlab-ctl command can be used to verify the default configuration.
 
-      `gitlab-ctl show-config` or `vi /opt/gitlab/etc/gitlab.rb.template`
+      `gitlab-ctl show-config`
+
+      or
+
+      `vi /opt/gitlab/etc/gitlab.rb.template`
 
 
 ### Using this base image to create a configured GitLab instance for yourself
@@ -32,7 +36,7 @@ This base image can be used to create an image configured to match your local in
 
 My recommended option is to build this Docker file to get the latest GitLab CE baked in to a new image and host it in your repo. Use another Dockerfile to copy your GitLab configurations and other modifications. This will keep the GitLab base installation de-coupled from your environment specific configurations. With this option, you will be able to patch GitLab independently, for most updates.
 
-  1. Configure GitLab for your system by using your own /etc/gitlab/gitlab.rb file
+  1. Configure GitLab for your system by using your own /etc/gitlab/gitlab.rb file.
   2. Run reconfigure.
 
       `gitlab-ctl reconfigure`    
