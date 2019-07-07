@@ -25,3 +25,6 @@ RUN yum install -y -v --rpmverbosity=debug gitlab-ce
 
 # Check GitLab status
 RUN grep "gitlab-ce" /opt/gitlab/version-manifest.txt
+
+# Cleanup
+RUN rm script.rpm.sh
