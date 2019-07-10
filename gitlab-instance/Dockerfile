@@ -7,6 +7,10 @@ LABEL MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 EXPOSE 80/tcp
 EXPOSE 443/tcp
 
+# Allow users in the root group to access them in the built image (Openshift Dedicated Requirement)
+RUN chgrp -R 0 /opt/gitlab && \
+    chmod -R g=u /opt/gitlab
+
 # Use our config file to override image default config file
 COPY gitlab.rb /etc/gitlab/gitlab.rb
 
