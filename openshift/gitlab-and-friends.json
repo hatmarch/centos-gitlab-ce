@@ -1,0 +1,1173 @@
+{
+    "kind": "List",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "postgresql",
+                "namespace": "gitlab",
+                "selfLink": "/oapi/v1/namespaces/gitlab/deploymentconfigs/postgresql",
+                "uid": "5178dda1-a46c-11e9-b572-0ad5658b3d4d",
+                "resourceVersion": "284987270",
+                "generation": 2,
+                "creationTimestamp": "2019-07-12T06:14:34Z",
+                "labels": {
+                    "app": "postgresql-persistent",
+                    "template": "postgresql-persistent-template"
+                },
+                "annotations": {
+                    "template.alpha.openshift.io/wait-for-ready": "true"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "recreateParams": {
+                        "timeoutSeconds": 600
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "postgresql"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "openshift",
+                                "name": "postgresql:9.6"
+                            },
+                            "lastTriggeredImage": "172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1"
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "test": false,
+                "selector": {
+                    "name": "postgresql"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "postgresql"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "postgresql-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "postgresql"
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "postgresql",
+                                "image": "172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1",
+                                "ports": [
+                                    {
+                                        "containerPort": 5432,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "POSTGRESQL_USER",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-user"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "POSTGRESQL_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-password"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "POSTGRESQL_DATABASE",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-name"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "postgresql-data",
+                                        "mountPath": "/var/lib/pgsql/data"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/usr/libexec/check-container",
+                                            "--live"
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 120,
+                                    "timeoutSeconds": 10,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/usr/libexec/check-container"
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "latestVersion": 1,
+                "observedGeneration": 2,
+                "replicas": 1,
+                "updatedReplicas": 1,
+                "availableReplicas": 1,
+                "details": {
+                    "message": "config change",
+                    "causes": [
+                        {
+                            "type": "ConfigChange"
+                        }
+                    ]
+                },
+                "conditions": [
+                    {
+                        "type": "Available",
+                        "status": "True",
+                        "lastTransitionTime": "2019-07-12T06:15:15Z",
+                        "message": "Deployment config has minimum availability."
+                    },
+                    {
+                        "type": "Progressing",
+                        "status": "True",
+                        "lastTransitionTime": "2019-07-12T06:15:16Z",
+                        "reason": "NewReplicationControllerAvailable",
+                        "message": "replication controller \"postgresql-1\" successfully rolled out"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "redis",
+                "namespace": "gitlab",
+                "selfLink": "/oapi/v1/namespaces/gitlab/deploymentconfigs/redis",
+                "uid": "78d2ec46-a46c-11e9-a33a-0aaa634095a7",
+                "resourceVersion": "284987577",
+                "generation": 2,
+                "creationTimestamp": "2019-07-12T06:15:40Z",
+                "labels": {
+                    "app": "redis-persistent",
+                    "template": "redis-persistent-template"
+                },
+                "annotations": {
+                    "template.alpha.openshift.io/wait-for-ready": "true"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "recreateParams": {
+                        "timeoutSeconds": 600
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "redis"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "namespace": "openshift",
+                                "name": "redis:3.2"
+                            },
+                            "lastTriggeredImage": "172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2"
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "revisionHistoryLimit": 10,
+                "test": false,
+                "selector": {
+                    "name": "redis"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "redis"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "redis-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "redis"
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "redis",
+                                "image": "172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2",
+                                "ports": [
+                                    {
+                                        "containerPort": 6379,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "REDIS_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "redis",
+                                                "key": "database-password"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "redis-data",
+                                        "mountPath": "/var/lib/redis/data"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "tcpSocket": {
+                                        "port": 6379
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/sh",
+                                            "-i",
+                                            "-c",
+                                            "test \"$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)\" == \"PONG\""
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "latestVersion": 1,
+                "observedGeneration": 2,
+                "replicas": 1,
+                "updatedReplicas": 1,
+                "availableReplicas": 1,
+                "details": {
+                    "message": "config change",
+                    "causes": [
+                        {
+                            "type": "ConfigChange"
+                        }
+                    ]
+                },
+                "conditions": [
+                    {
+                        "type": "Available",
+                        "status": "True",
+                        "lastTransitionTime": "2019-07-12T06:16:12Z",
+                        "message": "Deployment config has minimum availability."
+                    },
+                    {
+                        "type": "Progressing",
+                        "status": "True",
+                        "lastTransitionTime": "2019-07-12T06:15:43Z",
+                        "reason": "NewReplicationControllerAvailable",
+                        "message": "replication controller \"redis-1\" successfully rolled out"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "ReplicationController",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "postgresql-1",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/replicationcontrollers/postgresql-1",
+                "uid": "518f4ccb-a46c-11e9-82fb-0aaece80be33",
+                "resourceVersion": "284987267",
+                "generation": 2,
+                "creationTimestamp": "2019-07-12T06:14:34Z",
+                "labels": {
+                    "app": "postgresql-persistent",
+                    "openshift.io/deployment-config.name": "postgresql",
+                    "template": "postgresql-persistent-template"
+                },
+                "annotations": {
+                    "openshift.io/deployer-pod.completed-at": "2019-07-12 06:15:15 +0000 UTC",
+                    "openshift.io/deployer-pod.created-at": "2019-07-12 06:14:34 +0000 UTC",
+                    "openshift.io/deployer-pod.name": "postgresql-1-deploy",
+                    "openshift.io/deployment-config.latest-version": "1",
+                    "openshift.io/deployment-config.name": "postgresql",
+                    "openshift.io/deployment.phase": "Complete",
+                    "openshift.io/deployment.replicas": "1",
+                    "openshift.io/deployment.status-reason": "config change",
+                    "openshift.io/encoded-deployment-config": "{\"kind\":\"DeploymentConfig\",\"apiVersion\":\"apps.openshift.io/v1\",\"metadata\":{\"name\":\"postgresql\",\"namespace\":\"gitlab\",\"selfLink\":\"/apis/apps.openshift.io/v1/namespaces/gitlab/deploymentconfigs/postgresql\",\"uid\":\"5178dda1-a46c-11e9-b572-0ad5658b3d4d\",\"resourceVersion\":\"284987046\",\"generation\":2,\"creationTimestamp\":\"2019-07-12T06:14:34Z\",\"labels\":{\"app\":\"postgresql-persistent\",\"template\":\"postgresql-persistent-template\"},\"annotations\":{\"template.alpha.openshift.io/wait-for-ready\":\"true\"}},\"spec\":{\"strategy\":{\"type\":\"Recreate\",\"recreateParams\":{\"timeoutSeconds\":600},\"resources\":{},\"activeDeadlineSeconds\":21600},\"triggers\":[{\"type\":\"ImageChange\",\"imageChangeParams\":{\"automatic\":true,\"containerNames\":[\"postgresql\"],\"from\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"postgresql:9.6\"},\"lastTriggeredImage\":\"172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1\"}},{\"type\":\"ConfigChange\"}],\"replicas\":1,\"revisionHistoryLimit\":10,\"test\":false,\"selector\":{\"name\":\"postgresql\"},\"template\":{\"metadata\":{\"creationTimestamp\":null,\"labels\":{\"name\":\"postgresql\"}},\"spec\":{\"volumes\":[{\"name\":\"postgresql-data\",\"persistentVolumeClaim\":{\"claimName\":\"postgresql\"}}],\"containers\":[{\"name\":\"postgresql\",\"image\":\"172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1\",\"ports\":[{\"containerPort\":5432,\"protocol\":\"TCP\"}],\"env\":[{\"name\":\"POSTGRESQL_USER\",\"valueFrom\":{\"secretKeyRef\":{\"name\":\"postgresql\",\"key\":\"database-user\"}}},{\"name\":\"POSTGRESQL_PASSWORD\",\"valueFrom\":{\"secretKeyRef\":{\"name\":\"postgresql\",\"key\":\"database-password\"}}},{\"name\":\"POSTGRESQL_DATABASE\",\"valueFrom\":{\"secretKeyRef\":{\"name\":\"postgresql\",\"key\":\"database-name\"}}}],\"resources\":{\"limits\":{\"memory\":\"512Mi\"}},\"volumeMounts\":[{\"name\":\"postgresql-data\",\"mountPath\":\"/var/lib/pgsql/data\"}],\"livenessProbe\":{\"exec\":{\"command\":[\"/usr/libexec/check-container\",\"--live\"]},\"initialDelaySeconds\":120,\"timeoutSeconds\":10,\"periodSeconds\":10,\"successThreshold\":1,\"failureThreshold\":3},\"readinessProbe\":{\"exec\":{\"command\":[\"/usr/libexec/check-container\"]},\"initialDelaySeconds\":5,\"timeoutSeconds\":1,\"periodSeconds\":10,\"successThreshold\":1,\"failureThreshold\":3},\"terminationMessagePath\":\"/dev/termination-log\",\"terminationMessagePolicy\":\"File\",\"imagePullPolicy\":\"IfNotPresent\",\"securityContext\":{\"capabilities\":{},\"privileged\":false}}],\"restartPolicy\":\"Always\",\"terminationGracePeriodSeconds\":30,\"dnsPolicy\":\"ClusterFirst\",\"securityContext\":{},\"schedulerName\":\"default-scheduler\"}}},\"status\":{\"latestVersion\":1,\"observedGeneration\":0,\"replicas\":0,\"updatedReplicas\":0,\"availableReplicas\":0,\"unavailableReplicas\":0,\"details\":{\"message\":\"config change\",\"causes\":[{\"type\":\"ConfigChange\"}]}}}\n"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps.openshift.io/v1",
+                        "kind": "DeploymentConfig",
+                        "name": "postgresql",
+                        "uid": "5178dda1-a46c-11e9-b572-0ad5658b3d4d",
+                        "controller": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "deployment": "postgresql-1",
+                    "deploymentconfig": "postgresql",
+                    "name": "postgresql"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deployment": "postgresql-1",
+                            "deploymentconfig": "postgresql",
+                            "name": "postgresql"
+                        },
+                        "annotations": {
+                            "openshift.io/deployment-config.latest-version": "1",
+                            "openshift.io/deployment-config.name": "postgresql",
+                            "openshift.io/deployment.name": "postgresql-1"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "postgresql-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "postgresql"
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "postgresql",
+                                "image": "172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1",
+                                "ports": [
+                                    {
+                                        "containerPort": 5432,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "POSTGRESQL_USER",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-user"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "POSTGRESQL_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-password"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "name": "POSTGRESQL_DATABASE",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "postgresql",
+                                                "key": "database-name"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "postgresql-data",
+                                        "mountPath": "/var/lib/pgsql/data"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/usr/libexec/check-container",
+                                            "--live"
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 120,
+                                    "timeoutSeconds": 10,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/usr/libexec/check-container"
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "observedGeneration": 2
+            }
+        },
+        {
+            "kind": "ReplicationController",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "redis-1",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/replicationcontrollers/redis-1",
+                "uid": "7976f067-a46c-11e9-82fb-0aaece80be33",
+                "resourceVersion": "284987574",
+                "generation": 2,
+                "creationTimestamp": "2019-07-12T06:15:41Z",
+                "labels": {
+                    "app": "redis-persistent",
+                    "openshift.io/deployment-config.name": "redis",
+                    "template": "redis-persistent-template"
+                },
+                "annotations": {
+                    "openshift.io/deployer-pod.completed-at": "2019-07-12 06:16:13 +0000 UTC",
+                    "openshift.io/deployer-pod.created-at": "2019-07-12 06:15:41 +0000 UTC",
+                    "openshift.io/deployer-pod.name": "redis-1-deploy",
+                    "openshift.io/deployment-config.latest-version": "1",
+                    "openshift.io/deployment-config.name": "redis",
+                    "openshift.io/deployment.phase": "Complete",
+                    "openshift.io/deployment.replicas": "1",
+                    "openshift.io/deployment.status-reason": "config change",
+                    "openshift.io/encoded-deployment-config": "{\"kind\":\"DeploymentConfig\",\"apiVersion\":\"apps.openshift.io/v1\",\"metadata\":{\"name\":\"redis\",\"namespace\":\"gitlab\",\"selfLink\":\"/apis/apps.openshift.io/v1/namespaces/gitlab/deploymentconfigs/redis\",\"uid\":\"78d2ec46-a46c-11e9-a33a-0aaa634095a7\",\"resourceVersion\":\"284987382\",\"generation\":2,\"creationTimestamp\":\"2019-07-12T06:15:40Z\",\"labels\":{\"app\":\"redis-persistent\",\"template\":\"redis-persistent-template\"},\"annotations\":{\"template.alpha.openshift.io/wait-for-ready\":\"true\"}},\"spec\":{\"strategy\":{\"type\":\"Recreate\",\"recreateParams\":{\"timeoutSeconds\":600},\"resources\":{},\"activeDeadlineSeconds\":21600},\"triggers\":[{\"type\":\"ImageChange\",\"imageChangeParams\":{\"automatic\":true,\"containerNames\":[\"redis\"],\"from\":{\"kind\":\"ImageStreamTag\",\"namespace\":\"openshift\",\"name\":\"redis:3.2\"},\"lastTriggeredImage\":\"172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2\"}},{\"type\":\"ConfigChange\"}],\"replicas\":1,\"revisionHistoryLimit\":10,\"test\":false,\"selector\":{\"name\":\"redis\"},\"template\":{\"metadata\":{\"creationTimestamp\":null,\"labels\":{\"name\":\"redis\"}},\"spec\":{\"volumes\":[{\"name\":\"redis-data\",\"persistentVolumeClaim\":{\"claimName\":\"redis\"}}],\"containers\":[{\"name\":\"redis\",\"image\":\"172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2\",\"ports\":[{\"containerPort\":6379,\"protocol\":\"TCP\"}],\"env\":[{\"name\":\"REDIS_PASSWORD\",\"valueFrom\":{\"secretKeyRef\":{\"name\":\"redis\",\"key\":\"database-password\"}}}],\"resources\":{\"limits\":{\"memory\":\"512Mi\"}},\"volumeMounts\":[{\"name\":\"redis-data\",\"mountPath\":\"/var/lib/redis/data\"}],\"livenessProbe\":{\"tcpSocket\":{\"port\":6379},\"initialDelaySeconds\":30,\"timeoutSeconds\":1,\"periodSeconds\":10,\"successThreshold\":1,\"failureThreshold\":3},\"readinessProbe\":{\"exec\":{\"command\":[\"/bin/sh\",\"-i\",\"-c\",\"test \\\"$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)\\\" == \\\"PONG\\\"\"]},\"initialDelaySeconds\":5,\"timeoutSeconds\":1,\"periodSeconds\":10,\"successThreshold\":1,\"failureThreshold\":3},\"terminationMessagePath\":\"/dev/termination-log\",\"terminationMessagePolicy\":\"File\",\"imagePullPolicy\":\"IfNotPresent\",\"securityContext\":{\"capabilities\":{},\"privileged\":false}}],\"restartPolicy\":\"Always\",\"terminationGracePeriodSeconds\":30,\"dnsPolicy\":\"ClusterFirst\",\"securityContext\":{},\"schedulerName\":\"default-scheduler\"}}},\"status\":{\"latestVersion\":1,\"observedGeneration\":1,\"replicas\":0,\"updatedReplicas\":0,\"availableReplicas\":0,\"unavailableReplicas\":0,\"details\":{\"message\":\"config change\",\"causes\":[{\"type\":\"ConfigChange\"}]},\"conditions\":[{\"type\":\"Available\",\"status\":\"False\",\"lastUpdateTime\":\"2019-07-12T06:15:40Z\",\"lastTransitionTime\":\"2019-07-12T06:15:40Z\",\"message\":\"Deployment config does not have minimum availability.\"}]}}\n"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps.openshift.io/v1",
+                        "kind": "DeploymentConfig",
+                        "name": "redis",
+                        "uid": "78d2ec46-a46c-11e9-a33a-0aaa634095a7",
+                        "controller": true
+                    }
+                ]
+            },
+            "spec": {
+                "replicas": 1,
+                "selector": {
+                    "deployment": "redis-1",
+                    "deploymentconfig": "redis",
+                    "name": "redis"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deployment": "redis-1",
+                            "deploymentconfig": "redis",
+                            "name": "redis"
+                        },
+                        "annotations": {
+                            "openshift.io/deployment-config.latest-version": "1",
+                            "openshift.io/deployment-config.name": "redis",
+                            "openshift.io/deployment.name": "redis-1"
+                        }
+                    },
+                    "spec": {
+                        "volumes": [
+                            {
+                                "name": "redis-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "redis"
+                                }
+                            }
+                        ],
+                        "containers": [
+                            {
+                                "name": "redis",
+                                "image": "172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2",
+                                "ports": [
+                                    {
+                                        "containerPort": 6379,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "REDIS_PASSWORD",
+                                        "valueFrom": {
+                                            "secretKeyRef": {
+                                                "name": "redis",
+                                                "key": "database-password"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "resources": {
+                                    "limits": {
+                                        "memory": "512Mi"
+                                    }
+                                },
+                                "volumeMounts": [
+                                    {
+                                        "name": "redis-data",
+                                        "mountPath": "/var/lib/redis/data"
+                                    }
+                                ],
+                                "livenessProbe": {
+                                    "tcpSocket": {
+                                        "port": 6379
+                                    },
+                                    "initialDelaySeconds": 30,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "exec": {
+                                        "command": [
+                                            "/bin/sh",
+                                            "-i",
+                                            "-c",
+                                            "test \"$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)\" == \"PONG\""
+                                        ]
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "replicas": 1,
+                "fullyLabeledReplicas": 1,
+                "readyReplicas": 1,
+                "observedGeneration": 2
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "postgresql",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/services/postgresql",
+                "uid": "51751302-a46c-11e9-82fb-0aaece80be33",
+                "resourceVersion": "284987038",
+                "creationTimestamp": "2019-07-12T06:14:34Z",
+                "labels": {
+                    "app": "postgresql-persistent",
+                    "template": "postgresql-persistent-template"
+                },
+                "annotations": {
+                    "template.openshift.io/expose-uri": "postgres://{.spec.clusterIP}:{.spec.ports[?(.name==\"postgresql\")].port}"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "postgresql",
+                        "protocol": "TCP",
+                        "port": 5432,
+                        "targetPort": 5432
+                    }
+                ],
+                "selector": {
+                    "name": "postgresql"
+                },
+                "clusterIP": "172.30.27.106",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "redis",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/services/redis",
+                "uid": "788b79b6-a46c-11e9-b572-0ad5658b3d4d",
+                "resourceVersion": "284987354",
+                "creationTimestamp": "2019-07-12T06:15:39Z",
+                "labels": {
+                    "app": "redis-persistent",
+                    "template": "redis-persistent-template"
+                },
+                "annotations": {
+                    "template.openshift.io/expose-uri": "redis://{.spec.clusterIP}:{.spec.ports[?(.name==\"redis\")].port}"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "redis",
+                        "protocol": "TCP",
+                        "port": 6379,
+                        "targetPort": 6379
+                    }
+                ],
+                "selector": {
+                    "name": "redis"
+                },
+                "clusterIP": "172.30.226.11",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "Pod",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "postgresql-1-c2gf2",
+                "generateName": "postgresql-1-",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/pods/postgresql-1-c2gf2",
+                "uid": "5357dba1-a46c-11e9-82fb-0aaece80be33",
+                "resourceVersion": "284987259",
+                "creationTimestamp": "2019-07-12T06:14:37Z",
+                "labels": {
+                    "deployment": "postgresql-1",
+                    "deploymentconfig": "postgresql",
+                    "name": "postgresql"
+                },
+                "annotations": {
+                    "openshift.io/deployment-config.latest-version": "1",
+                    "openshift.io/deployment-config.name": "postgresql",
+                    "openshift.io/deployment.name": "postgresql-1",
+                    "openshift.io/scc": "restricted"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "ReplicationController",
+                        "name": "postgresql-1",
+                        "uid": "518f4ccb-a46c-11e9-82fb-0aaece80be33",
+                        "controller": true
+                    }
+                ]
+            },
+            "spec": {
+                "volumes": [
+                    {
+                        "name": "postgresql-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "postgresql"
+                        }
+                    },
+                    {
+                        "name": "default-token-nx9fq",
+                        "secret": {
+                            "secretName": "default-token-nx9fq",
+                            "defaultMode": 420
+                        }
+                    }
+                ],
+                "containers": [
+                    {
+                        "name": "postgresql",
+                        "image": "172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1",
+                        "ports": [
+                            {
+                                "containerPort": 5432,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "env": [
+                            {
+                                "name": "POSTGRESQL_USER",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "name": "postgresql",
+                                        "key": "database-user"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRESQL_PASSWORD",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "name": "postgresql",
+                                        "key": "database-password"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POSTGRESQL_DATABASE",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "name": "postgresql",
+                                        "key": "database-name"
+                                    }
+                                }
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "memory": "512Mi"
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "name": "postgresql-data",
+                                "mountPath": "/var/lib/pgsql/data"
+                            },
+                            {
+                                "name": "default-token-nx9fq",
+                                "readOnly": true,
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                            }
+                        ],
+                        "livenessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/usr/libexec/check-container",
+                                    "--live"
+                                ]
+                            },
+                            "initialDelaySeconds": 120,
+                            "timeoutSeconds": 10,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 3
+                        },
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/usr/libexec/check-container"
+                                ]
+                            },
+                            "initialDelaySeconds": 5,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 3
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "imagePullPolicy": "IfNotPresent",
+                        "securityContext": {
+                            "capabilities": {
+                                "drop": [
+                                    "KILL",
+                                    "MKNOD",
+                                    "NET_RAW",
+                                    "SETGID",
+                                    "SETUID"
+                                ]
+                            },
+                            "privileged": false,
+                            "runAsUser": 1000830000
+                        }
+                    }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 30,
+                "dnsPolicy": "ClusterFirst",
+                "nodeSelector": {
+                    "type": "compute"
+                },
+                "serviceAccountName": "default",
+                "serviceAccount": "default",
+                "nodeName": "ip-10-194-25-176.ap-southeast-2.compute.internal",
+                "securityContext": {
+                    "seLinuxOptions": {
+                        "level": "s0:c29,c9"
+                    },
+                    "fsGroup": 1000830000
+                },
+                "imagePullSecrets": [
+                    {
+                        "name": "default-dockercfg-8ctrp"
+                    }
+                ]
+            },
+            "status": {
+                "phase": "Running",
+                "conditions": [
+                    {
+                        "type": "Initialized",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:14:37Z"
+                    },
+                    {
+                        "type": "Ready",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:15:15Z"
+                    },
+                    {
+                        "type": "ContainersReady",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": null
+                    },
+                    {
+                        "type": "PodScheduled",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:14:37Z"
+                    }
+                ],
+                "hostIP": "10.194.25.176",
+                "podIP": "10.129.8.97",
+                "startTime": "2019-07-12T06:14:37Z",
+                "containerStatuses": [
+                    {
+                        "name": "postgresql",
+                        "state": {
+                            "running": {
+                                "startedAt": "2019-07-12T06:14:59Z"
+                            }
+                        },
+                        "lastState": {},
+                        "ready": true,
+                        "restartCount": 0,
+                        "image": "172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1",
+                        "imageID": "docker-pullable://172.30.107.187:5000/openshift/postgresql@sha256:52784d5e55d82076ac5f809ed6d298af6bac2003e2cfe1f0099123deefc45da1",
+                        "containerID": "docker://ce204c0c4bfb0d2fc423053b9ffe346947bde5b8728e556d7f4b4b3290a2511a"
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "Pod",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "redis-1-lkpvj",
+                "generateName": "redis-1-",
+                "namespace": "gitlab",
+                "selfLink": "/api/v1/namespaces/gitlab/pods/redis-1-lkpvj",
+                "uid": "7abd0378-a46c-11e9-82fb-0aaece80be33",
+                "resourceVersion": "284987559",
+                "creationTimestamp": "2019-07-12T06:15:43Z",
+                "labels": {
+                    "deployment": "redis-1",
+                    "deploymentconfig": "redis",
+                    "name": "redis"
+                },
+                "annotations": {
+                    "openshift.io/deployment-config.latest-version": "1",
+                    "openshift.io/deployment-config.name": "redis",
+                    "openshift.io/deployment.name": "redis-1",
+                    "openshift.io/scc": "restricted"
+                },
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "ReplicationController",
+                        "name": "redis-1",
+                        "uid": "7976f067-a46c-11e9-82fb-0aaece80be33",
+                        "controller": true
+                    }
+                ]
+            },
+            "spec": {
+                "volumes": [
+                    {
+                        "name": "redis-data",
+                        "persistentVolumeClaim": {
+                            "claimName": "redis"
+                        }
+                    },
+                    {
+                        "name": "default-token-nx9fq",
+                        "secret": {
+                            "secretName": "default-token-nx9fq",
+                            "defaultMode": 420
+                        }
+                    }
+                ],
+                "containers": [
+                    {
+                        "name": "redis",
+                        "image": "172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2",
+                        "ports": [
+                            {
+                                "containerPort": 6379,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "env": [
+                            {
+                                "name": "REDIS_PASSWORD",
+                                "valueFrom": {
+                                    "secretKeyRef": {
+                                        "name": "redis",
+                                        "key": "database-password"
+                                    }
+                                }
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "memory": "512Mi"
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "name": "redis-data",
+                                "mountPath": "/var/lib/redis/data"
+                            },
+                            {
+                                "name": "default-token-nx9fq",
+                                "readOnly": true,
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount"
+                            }
+                        ],
+                        "livenessProbe": {
+                            "tcpSocket": {
+                                "port": 6379
+                            },
+                            "initialDelaySeconds": 30,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 3
+                        },
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-i",
+                                    "-c",
+                                    "test \"$(redis-cli -h 127.0.0.1 -a $REDIS_PASSWORD ping)\" == \"PONG\""
+                                ]
+                            },
+                            "initialDelaySeconds": 5,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 3
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "imagePullPolicy": "IfNotPresent",
+                        "securityContext": {
+                            "capabilities": {
+                                "drop": [
+                                    "KILL",
+                                    "MKNOD",
+                                    "NET_RAW",
+                                    "SETGID",
+                                    "SETUID"
+                                ]
+                            },
+                            "privileged": false,
+                            "runAsUser": 1000830000
+                        }
+                    }
+                ],
+                "restartPolicy": "Always",
+                "terminationGracePeriodSeconds": 30,
+                "dnsPolicy": "ClusterFirst",
+                "nodeSelector": {
+                    "type": "compute"
+                },
+                "serviceAccountName": "default",
+                "serviceAccount": "default",
+                "nodeName": "ip-10-194-24-114.ap-southeast-2.compute.internal",
+                "securityContext": {
+                    "seLinuxOptions": {
+                        "level": "s0:c29,c9"
+                    },
+                    "fsGroup": 1000830000
+                },
+                "imagePullSecrets": [
+                    {
+                        "name": "default-dockercfg-8ctrp"
+                    }
+                ]
+            },
+            "status": {
+                "phase": "Running",
+                "conditions": [
+                    {
+                        "type": "Initialized",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:15:43Z"
+                    },
+                    {
+                        "type": "Ready",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:16:12Z"
+                    },
+                    {
+                        "type": "ContainersReady",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": null
+                    },
+                    {
+                        "type": "PodScheduled",
+                        "status": "True",
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2019-07-12T06:15:43Z"
+                    }
+                ],
+                "hostIP": "10.194.24.114",
+                "podIP": "10.130.0.148",
+                "startTime": "2019-07-12T06:15:43Z",
+                "containerStatuses": [
+                    {
+                        "name": "redis",
+                        "state": {
+                            "running": {
+                                "startedAt": "2019-07-12T06:16:03Z"
+                            }
+                        },
+                        "lastState": {},
+                        "ready": true,
+                        "restartCount": 0,
+                        "image": "172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2",
+                        "imageID": "docker-pullable://172.30.107.187:5000/openshift/redis@sha256:be29e2bc6b5d42e6ab7a2e394ef2725345e42992e61e012ab5735cdddd5b81e2",
+                        "containerID": "docker://a33a41cdc71a6173985a5d8730153b664a74a909519c716e8d89db702cbca13c"
+                    }
+                ]
+            }
+        }
+    ]
+}
