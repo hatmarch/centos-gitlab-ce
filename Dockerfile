@@ -38,9 +38,6 @@ RUN chgrp -R 0 /var/opt/gitlab && \
 #############################################
 USER 998
 
-# Update permissions to match runtime user
-CMD ["/assets/update-permissions"]
-
 # Allow to access embedded tools
 ENV PATH /opt/gitlab/embedded/bin:/opt/gitlab/bin:/assets:$PATH
 
@@ -55,6 +52,9 @@ ENV TERM xterm
 
 # Define data volumes
 VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+
+# Update permissions to match runtime user
+CMD ["/assets/update-permissions"]
 
 # Wrapper to handle signal, trigger runit and reconfigure GitLab
 CMD ["/assets/wrapper"]

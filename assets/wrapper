@@ -47,6 +47,7 @@ function detect_unclean_start() {
 trap "sigterm_handler; exit" TERM
 
 echo "Thank you for using GitLab Docker Image!"
+echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.docker.com/r/tyrell/centos-gitlab-ce"
 echo "Current version: $RELEASE_PACKAGE=$RELEASE_VERSION"
 echo ""
 if [[ "$PACKAGECLOUD_REPO" == "unstable" ]]; then
