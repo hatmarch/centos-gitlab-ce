@@ -3,8 +3,6 @@ FROM centos:centos7
 # This is a base image with a GitLab CE default install up and running.
 MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 
-SHELL ["/bin/sh", "-c"],
-
 # Copy assets
 COPY assets/ /assets/
 
