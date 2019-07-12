@@ -3,30 +3,40 @@ These commands are from the blog post found at https://blog.openshift.com/gettin
 
 # oc new-project gitlab
 
-  Now using project "gitlab" on server "https://api.your-osd.openshift.com:443".
+    Now using project "gitlab" on server "https://api.your-osd.openshift.com:443".
 
-  You can add applications to this project with the 'new-app' command. For example, try:
+    You can add applications to this project with the 'new-app' command. For example, try:
 
-      oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
+        oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
 
-  to build a new example application in Ruby.
+    to build a new example application in Ruby.
 
-# oc new-app gitlab/gitlab-ce
-    --> Found Docker image 91ae3a8 (5 days old) from Docker Hub for "gitlab/gitlab-ce"
+
+# oc new-app tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64
+
+    --> Found Docker image 15563c2 (10 days old) from Docker Hub for "gitlab/gitlab-ce"
+
     * An image stream will be created as "gitlab-ce:latest" that will track this image
     * This image will be deployed in deployment config "gitlab-ce"
-    * [WARNING] Image "gitlab-ce" runs as the 'root' user which may not be permitted by your cluster administrator
     * Ports 22/tcp, 443/tcp, 80/tcp will be load balanced by service "gitlab-ce"
-    --> Creating resources with label app=gitlab-ce ...
-    ImageStream "gitlab-ce" created
-    DeploymentConfig "gitlab-ce" created
-    Service "gitlab-ce" created
+      * Other containers can access this service through the hostname "gitlab-ce"
+    * This image declares volumes and will default to use non-persistent, host-local storage.
+      You can add persistent volumes later by running 'volume dc/gitlab-ce --add ...'
+    * WARNING: Image "gitlab/gitlab-ce" runs as the 'root' user which may not be permitted by your cluster administrator
+
+    --> Creating resources ...
+    imagestream "gitlab-ce" created
+    deploymentconfig "gitlab-ce" created
+    service "gitlab-ce" created
     --> Success
     Run 'oc status' to view your app.
 
+
 # oc get pods
+
     NAME                READY     STATUS             RESTARTS   AGE
     gitlab-ce-1-kekx2   0/1       CrashLoopBackOff   4          5m
+
 
 # oc logs -p gitlab-ce-1-kekx2
 
