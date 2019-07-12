@@ -1,7 +1,7 @@
 FROM centos:centos7
 
 # This is a base image with a GitLab CE default install up and running.
-LABEL MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
+MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 
 SHELL ["/bin/sh", "-c"],
 
@@ -37,6 +37,9 @@ RUN chgrp -R 0 /var/opt/gitlab && \
 # as we do not need root after this point
 #############################################
 USER 998
+
+# Update permissions to match runtime user
+CMD ["/assets/update-permissions"]
 
 # Allow to access embedded tools
 ENV PATH /opt/gitlab/embedded/bin:/opt/gitlab/bin:/assets:$PATH

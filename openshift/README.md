@@ -11,7 +11,7 @@ These commands are from the blog post found at https://blog.openshift.com/gettin
 
     to build a new example application in Ruby.
 
-# oc delete all -l app=gitlab-ce
+# oc delete all -l app=centos-gitlab-ce
 
 # oc new-app tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64
 
