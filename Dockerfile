@@ -8,11 +8,14 @@ SHELL ["/bin/sh", "-c"],
 # Copy assets
 COPY assets/ /assets/
 
-# Install GitLab
+# Install dependencies
 RUN yum -y update && \
     yum install -y curl policycoreutils-python openssh-server && \
     yum install -y postfix && \
-    curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh >> script.rpm.sh && \
+    yum clean all
+
+# Install GitLab
+RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh >> script.rpm.sh && \
     sh script.rpm.sh && \
     rm script.rpm.sh && \
     yum install -y -v --rpmverbosity=debug gitlab-ce && \

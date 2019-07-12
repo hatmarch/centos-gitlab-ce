@@ -6,6 +6,12 @@ LABEL MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 # Use our config file to override image default config file
 COPY gitlab.rb /etc/gitlab/gitlab.rb
 
-# Manually run runsvdir-start as a background process before running reconfigure and run reconfigure
-RUN /opt/gitlab/embedded/bin/runsvdir-start &
+
+#############################################
+# Change user from 'root' to 'git 998'
+# as we do not need root after this point
+#############################################
+USER 998
+
+# Run reconfigure using our gitlab.rb file from above
 RUN gitlab-ctl reconfigure
