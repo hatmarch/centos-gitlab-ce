@@ -3,28 +3,49 @@ FROM centos:centos7
 # This is a base image with a GitLab CE default install up and running.
 LABEL MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 
-# Open ports necessary to allow connections in the system firewall
-EXPOSE 80/tcp
-EXPOSE 443/tcp
+SHELL ["/bin/sh", "-c"],
 
-# Install and Configure Required Dependencies
-RUN yum -y update; yum clean all
-RUN yum install -y curl policycoreutils-python openssh-server
+# Copy assets
+COPY assets/ /assets/
 
-# Install Postfix service to send notification emails, and enable it to start at system boot, then check if its up and running
-RUN yum -y update; yum clean all
-RUN yum install -y postfix
+# Install GitLab
+RUN yum -y update && \
+    yum install -y curl policycoreutils-python openssh-server && \
+    yum install -y postfix && \
+    curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh >> script.rpm.sh && \
+    sh script.rpm.sh && \
+    rm script.rpm.sh && \
+    yum install -y -v --rpmverbosity=debug gitlab-ce && \
+    yum clean all
 
-# Add the GitLab package YUM repository to the container
-RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh >> script.rpm.sh
-RUN sh script.rpm.sh
+# Setup GitLab
+RUN /assets/setup
 
-# Install the GitLab Community Edition package
-RUN yum -y update; yum clean all
-RUN yum install -y -v --rpmverbosity=debug gitlab-ce
+# Allow to access embedded tools
+ENV PATH /opt/gitlab/embedded/bin:/opt/gitlab/bin:/assets:$PATH
 
-# Check GitLab status
-RUN grep "gitlab-ce" /opt/gitlab/version-manifest.txt
+# Resolve error: TERM environment variable not set.
+ENV TERM xterm
 
-# Cleanup
-RUN rm script.rpm.sh
+# Expose web & ssh
+EXPOSE 443 80 22
+
+# Resolve error: TERM environment variable not set.
+ENV TERM xterm
+
+# Allow users in the root group to access GitLab directory in the built image (Openshift Dedicated Requirement)
+RUN chgrp -R 0 /var/opt/gitlab && \
+    chmod -R g=u /var/opt/gitlab && \
+    chgrp -R 0 /etc/gitlab && \
+    chmod -R g=u /etc/gitlab && \
+    chgrp -R 0 /var/log/gitlab && \
+    chmod -R g=u /var/log/gitlab
+
+# Define data volumes
+VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+
+# Wrapper to handle signal, trigger runit and reconfigure GitLab
+CMD ["/assets/wrapper"]
+
+HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
+CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10

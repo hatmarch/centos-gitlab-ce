@@ -1,0 +1,61 @@
+#!/bin/bash
+
+set -e
+
+# Create sshd daemon
+echo "Creating sshd daemon"
+mkdir -p /opt/gitlab/sv/sshd/supervise /opt/gitlab/sv/sshd/log/supervise
+mkfifo /opt/gitlab/sv/sshd/supervise/ok /opt/gitlab/sv/sshd/log/supervise/ok
+printf "#!/bin/sh\nexec 2>&1\numask 077\nexec /usr/sbin/sshd -D -f /assets/sshd_config -e" > /opt/gitlab/sv/sshd/run
+printf "#!/bin/sh\nexec svlogd -tt /var/log/gitlab/sshd" > /opt/gitlab/sv/sshd/log/run
+chmod a+x /opt/gitlab/sv/sshd/run /opt/gitlab/sv/sshd/log/run
+
+# Remove current gitlab.rb file
+echo "Removing current gitlab.rb file"
+rm -f /etc/gitlab/gitlab.rb
+
+# Patch omnibus package
+echo "Patching omnibus package"
+sed -i "s/external_url 'GENERATED_EXTERNAL_URL'/# external_url 'GENERATED_EXTERNAL_URL'/" /opt/gitlab/etc/gitlab.rb.template
+sed -i "s/\/etc\/gitlab\/gitlab.rb/\/assets\/gitlab.rb/" /opt/gitlab/embedded/cookbooks/gitlab/recipes/show_config.rb
+sed -i "s/\/etc\/gitlab\/gitlab.rb/\/assets\/gitlab.rb/" /opt/gitlab/embedded/cookbooks/gitlab/recipes/config.rb
+
+# Set install type to docker
+echo "Setting installation type to Docker"
+echo 'gitlab-docker' > /opt/gitlab/embedded/service/gitlab-rails/INSTALLATION_TYPE
+
+# Create groups
+echo "Creating groups"
+
+groupadd_if_not_exist()
+{
+	group=$1
+  group_name=$2
+
+  if ! grep -q "$group" /etc/group ; then
+      echo "Adding group $group named $group_name"
+      groupadd -g $group $group_name
+  else
+      echo "The group $group named $group_name already exists."
+  fi
+}
+
+groupadd_if_not_exist 998 git
+groupadd_if_not_exist 999 gitlab-www
+groupadd_if_not_exist 997 gitlab-redis
+groupadd_if_not_exist 996 gitlab-psql
+groupadd_if_not_exist 994 mattermost
+groupadd_if_not_exist 993 registry
+groupadd_if_not_exist 992 gitlab-prometheus
+groupadd_if_not_exist 991 gitlab-consul
+
+# Create accounts
+echo "Creating accounts"
+useradd -m -u 998 -g 998 -m -s /bin/sh -d /var/opt/gitlab git
+useradd -m -u 999 -g 999 -m -s /bin/false -d /var/opt/gitlab/nginx gitlab-www
+useradd -m -u 997 -g 997 -m -s /bin/false -d /var/opt/gitlab/redis gitlab-redis
+useradd -m -u 996 -g 996 -m -s /bin/sh -d /var/opt/gitlab/postgresql gitlab-psql
+useradd -m -u 994 -g 994 -m -s /bin/sh -d /var/opt/gitlab/mattermost mattermost
+useradd -m -u 993 -g 993 -m -s /bin/sh -d /var/opt/gitlab/registry registry
+useradd -m -u 992 -g 992 -m -s /bin/sh -d /var/opt/gitlab/prometheus gitlab-prometheus
+useradd -m -u 991 -g 991 -m -s /bin/sh -d /var/opt/gitlab/consul gitlab-consul
