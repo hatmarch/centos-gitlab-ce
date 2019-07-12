@@ -6,9 +6,11 @@ MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 # Copy assets
 COPY assets/ /assets/
 
+# Run a Yum update
+RUN yum -y update
+
 # Install dependencies
-RUN yum -y update && \
-    yum install -y curl policycoreutils-python openssh-server && \
+RUN yum install -y curl policycoreutils-python openssh-server && \
     yum install -y postfix && \
     yum clean all
 
