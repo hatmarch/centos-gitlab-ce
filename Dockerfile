@@ -43,6 +43,9 @@ VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 COPY conf/gitlab.rb /etc/gitlab/gitlab.rb
 COPY conf/sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/sysctl.rb
 
+# Wrapper to trigger runit and reconfigure GitLab
+RUN /assets/wrapper
+
 # Allow users in the root group to access GitLab critical directories
 # in the built image (Openshift Dedicated Requirement)
 RUN chgrp -R 0 /var/opt/gitlab && \
@@ -52,13 +55,19 @@ RUN chgrp -R 0 /var/opt/gitlab && \
     chgrp -R 0 /var/log/gitlab && \
     chmod -R g=u /var/log/gitlab
 
-# Update permissions to fix directory permission issues
-RUN /assets/update-permissions
-
-# Entrypoint wrapper to handle signal, trigger runit and reconfigure GitLab
-RUN /assets/wrapper
+# Add git user to root group and Update permissions to fix directory permission issues
+RUN usermod -a -G 0 git && \
+    usermod -a -G wheel git && \
+    /assets/update-permissions
 
 HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
 CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
 
+# Run our start script
 ENTRYPOINT ["/assets/container-start"]
+
+#############################################
+# Change user from 'root' to 'git 1007'
+# as we do not need root after this point
+#############################################
+#USER 1007
