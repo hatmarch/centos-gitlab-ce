@@ -15,27 +15,28 @@ This project contains a Docker image that can be used as a base image to create 
       `docker push <your-docker-repo>/centos-gitlab-ce:latest`
 
 
-### Running this image for verification and troubleshooting
+### Running this image in Openshift
 
-This image is not intended to be run as a GitLab instance, since the configuration is left untouched as is. However, if you want to run the image to inspect the GitLab installation and the container environment, you can do so by running the following command.
+  1. `oc login`
+  2. `oc new-project gitlab`
+  3. `sh openshift/create-openshift-app.sh`
 
-  `docker run -i -t tyrell/centos-gitlab-ce:latest /bin/bash`
+The openshift/create-openshift-app.sh script uses the image hosted at https://hub.docker.com/r/tyrell/centos-gitlab-ce and creates the required Persistent Volume Claims in Openshift for persistent storage volume mounts.
 
-Once inside the container, gitlab-ctl command can be used to verify the default configuration.
+Delete the application using;
 
-  `gitlab-ctl show-config` or `vi /opt/gitlab/etc/gitlab.rb.template`
+  'oc delete all -l app=gitlab-ce'
 
 
-### Using this base image to create a configured GitLab instance for yourself
+### Initialising GitLab
 
-This base image can be used to create an image configured to match your local instance. I have hosted an image at https://hub.docker.com/r/tyrell/centos-gitlab-ce at the time of writing. Please check the image TAG for the GitLab CE version being used.
+Run '/assets/wrapper' to initialise GitLab for firs time. This creates all necessary dependencies and database schemas.
 
-My recommended option is to build this Docker file to get the latest GitLab CE baked in to a new image and host it in your repo. Use another Dockerfile to copy your GitLab configurations and other modifications. This will keep the GitLab base installation de-coupled from your environment specific configurations. With this option, you will be able to patch GitLab independently, for most updates.
 
-  1. Configure GitLab for your system by using your own /etc/gitlab/gitlab.rb file.
-  2. Run reconfigure.
+### Notes
 
-      `gitlab-ctl reconfigure`    
+  1. conf/gitlab.rb is copied into the image during build.
+  2. conf/sysctl.rb is a modified version to prevent all the sysctl kernel parameter modifications performed during ed during reconfigure. It is expected that PostgreSQL will be running on its own container during a proper deployment.
 
 
 ### License

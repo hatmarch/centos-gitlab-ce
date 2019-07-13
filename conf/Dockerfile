@@ -13,3 +13,5 @@ COPY gitlab.rb /etc/gitlab/gitlab.rb
 # as we do not need root after this point
 #############################################
 USER 998
+
+CMD [gitlab-ctl service-list]

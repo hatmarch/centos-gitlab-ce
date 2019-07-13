@@ -18,25 +18,11 @@ RUN yum install -y curl policycoreutils-python openssh-server && \
 RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh >> script.rpm.sh && \
     sh script.rpm.sh && \
     rm script.rpm.sh && \
-    yum install -y -v --rpmverbosity=debug gitlab-ce && \
+    yum install -y gitlab-ce && \
     yum clean all
 
 # Setup GitLab
 RUN /assets/setup
-
-# Allow users in the root group to access GitLab directory in the built image (Openshift Dedicated Requirement)
-RUN chgrp -R 0 /var/opt/gitlab && \
-    chmod -R g=u /var/opt/gitlab && \
-    chgrp -R 0 /etc/gitlab && \
-    chmod -R g=u /etc/gitlab && \
-    chgrp -R 0 /var/log/gitlab && \
-    chmod -R g=u /var/log/gitlab
-
-#############################################
-# Change user from 'root' to 'git 998'
-# as we do not need root after this point
-#############################################
-USER 998
 
 # Allow to access embedded tools
 ENV PATH /opt/gitlab/embedded/bin:/opt/gitlab/bin:/assets:$PATH
@@ -53,11 +39,27 @@ ENV TERM xterm
 # Define data volumes
 VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
-# Update permissions to match runtime user
-CMD ["/assets/update-permissions"]
+# Initialise GitLab configuration
+COPY conf/gitlab.rb /etc/gitlab/gitlab.rb
+COPY conf/sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/sysctl.rb
 
-# Wrapper to handle signal, trigger runit and reconfigure GitLab
-CMD ["/assets/wrapper"]
+# Allow users in the root group to access GitLab critical directories
+# in the built image (Openshift Dedicated Requirement)
+RUN chgrp -R 0 /var/opt/gitlab && \
+    chmod -R g=u /var/opt/gitlab && \
+    chgrp -R 0 /etc/gitlab && \
+    chmod -R g=u /etc/gitlab && \
+    chgrp -R 0 /var/log/gitlab && \
+    chmod -R g=u /var/log/gitlab
+
+# Update permissions to fix directory permission issues
+RUN /assets/update-permissions
+
+# Entrypoint wrapper to handle signal, trigger runit and reconfigure GitLab
+RUN /assets/wrapper
 
 HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
 CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
+
+# Start GitLab services
+CMD /opt/gitlab/embedded/bin/runsvdir-start &

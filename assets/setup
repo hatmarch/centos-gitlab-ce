@@ -40,22 +40,22 @@ groupadd_if_not_exist()
   fi
 }
 
-groupadd_if_not_exist 998 git
-groupadd_if_not_exist 999 gitlab-www
-groupadd_if_not_exist 997 gitlab-redis
-groupadd_if_not_exist 996 gitlab-psql
-groupadd_if_not_exist 994 mattermost
-groupadd_if_not_exist 993 registry
-groupadd_if_not_exist 992 gitlab-prometheus
-groupadd_if_not_exist 991 gitlab-consul
+groupadd_if_not_exist 1007 git
+groupadd_if_not_exist 1006 gitlab-www
+groupadd_if_not_exist 1005 gitlab-redis
+groupadd_if_not_exist 1004 gitlab-psql
+groupadd_if_not_exist 1003 mattermost
+groupadd_if_not_exist 1002 registry
+groupadd_if_not_exist 1001 gitlab-prometheus
+groupadd_if_not_exist 1000 gitlab-consul
 
 # Create accounts
 echo "Creating accounts"
-useradd -m -u 998 -g 998 -m -s /bin/sh -d /var/opt/gitlab git
-useradd -m -u 999 -g 999 -m -s /bin/false -d /var/opt/gitlab/nginx gitlab-www
-useradd -m -u 997 -g 997 -m -s /bin/false -d /var/opt/gitlab/redis gitlab-redis
-useradd -m -u 996 -g 996 -m -s /bin/sh -d /var/opt/gitlab/postgresql gitlab-psql
-useradd -m -u 994 -g 994 -m -s /bin/sh -d /var/opt/gitlab/mattermost mattermost
-useradd -m -u 993 -g 993 -m -s /bin/sh -d /var/opt/gitlab/registry registry
-useradd -m -u 992 -g 992 -m -s /bin/sh -d /var/opt/gitlab/prometheus gitlab-prometheus
-useradd -m -u 991 -g 991 -m -s /bin/sh -d /var/opt/gitlab/consul gitlab-consul
+useradd -m -u 1007 -g 1007 -m -s /bin/sh -d /var/opt/gitlab git
+useradd -m -u 1006 -g 1006 -m -s /bin/false -d /var/opt/gitlab/nginx gitlab-www
+useradd -m -u 1005 -g 1005 -m -s /bin/false -d /var/opt/gitlab/redis gitlab-redis
+useradd -m -u 1004 -g 1004 -m -s /bin/sh -d /var/opt/gitlab/postgresql gitlab-psql
+useradd -m -u 1003 -g 1003 -m -s /bin/sh -d /var/opt/gitlab/mattermost mattermost
+useradd -m -u 1002 -g 1002 -m -s /bin/sh -d /var/opt/gitlab/registry registry
+useradd -m -u 1001 -g 1001 -m -s /bin/sh -d /var/opt/gitlab/prometheus gitlab-prometheus
+useradd -m -u 1000 -g 1000 -m -s /bin/sh -d /var/opt/gitlab/consul gitlab-consul
