@@ -25,7 +25,7 @@ The openshift/create-openshift-app.sh script uses the image hosted at https://hu
 
 Delete the Openshift application using;
 
-      'oc delete all -l app=gitlab-ce'
+  'oc delete all -l app=gitlab-ce'
 
 
 ### Initialising GitLab
@@ -36,7 +36,7 @@ Run '/assets/wrapper' to initialise GitLab for the first time. This script creat
 ### Notes
 
   1. conf/gitlab.rb is copied into the image during build.
-  2. conf/sysctl.rb is a modified version to prevent all the sysctl kernel parameter modifications performed during ed during reconfigure. It is expected that PostgreSQL will be running on its own container during a proper deployment.
+  2. conf/sysctl.rb is a modified version to prevent all the sysctl kernel parameter modifications performed during reconfigure. It is expected that PostgreSQL will be running on its own container during a proper deployment.
 
 
 ### License
