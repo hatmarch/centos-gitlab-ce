@@ -23,14 +23,14 @@ This project contains a Docker image that can be used as a base image to create 
 
 The openshift/create-openshift-app.sh script uses the image hosted at https://hub.docker.com/r/tyrell/centos-gitlab-ce and creates the required Persistent Volume Claims in Openshift for persistent storage volume mounts.
 
-Delete the application using;
+Delete the Openshift application using;
 
-  'oc delete all -l app=gitlab-ce'
+      'oc delete all -l app=gitlab-ce'
 
 
 ### Initialising GitLab
 
-Run '/assets/wrapper' to initialise GitLab for firs time. This creates all necessary dependencies and database schemas.
+Run '/assets/wrapper' to initialise GitLab for the first time. This script creates all the necessary dependencies and database schemas etc.
 
 
 ### Notes
