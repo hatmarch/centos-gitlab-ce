@@ -25,12 +25,12 @@ The openshift/create-openshift-app.sh script uses the image hosted at https://hu
 
 Delete the Openshift application using;
 
-  'oc delete all -l app=gitlab-ce'
+  `oc delete all -l app=gitlab-ce`
 
 
 ### Initialising GitLab
 
-Run '/assets/wrapper' to initialise GitLab for the first time. This script creates all the necessary dependencies and database schemas etc.
+Run `/assets/wrapper` to initialise GitLab for the first time. This script creates all the necessary dependencies and database schemas etc.
 
 
 ### Notes
