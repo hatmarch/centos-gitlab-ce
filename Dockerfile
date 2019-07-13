@@ -3,9 +3,6 @@ FROM centos:centos7
 # This is a base image with a GitLab CE default install up and running.
 MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
 
-# Copy assets
-COPY assets/ /assets/
-
 # Run a Yum update
 RUN yum -y update
 
@@ -20,6 +17,9 @@ RUN curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
     rm script.rpm.sh && \
     yum install -y gitlab-ce && \
     yum clean all
+
+# Copy assets
+COPY assets/ /assets/
 
 # Setup GitLab
 RUN /assets/setup
@@ -61,5 +61,4 @@ RUN /assets/wrapper
 HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
 CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
 
-# Start GitLab services
-CMD /opt/gitlab/embedded/bin/runsvdir-start &
+ENTRYPOINT ["/assets/container-start"]

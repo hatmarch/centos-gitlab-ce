@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Start service manager
+echo "Starting services..."
+GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
+sleep 3s
+gitlab-ctl start
+
+exec "$@"
