@@ -65,11 +65,11 @@ RUN usermod -a -G 0 git && \
     /assets/fix-permissions /etc/gitlab && \
     /assets/fix-permissions /opt/gitlab
 
-HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
-CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
+# Container ENTRYPOINT
+ENTRYPOINT ["assets/container-entrypoint"]
 
 # Run our start script
-ENTRYPOINT ["/assets/container-start"]
+CMD ["/assets/container-start"]
 
 #############################################
 # Change user from 'root' to 'git 1007'

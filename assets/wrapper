@@ -121,9 +121,3 @@ fi
 
 # Gracefully shutdown
 gitlab-ctl stop
-
-# Tail all logs
-#gitlab-ctl tail &
-
-# Wait for SIGTERM
-#wait
