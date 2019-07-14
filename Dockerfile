@@ -41,6 +41,8 @@ VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 # Initialise GitLab configuration
 COPY conf/gitlab.rb /etc/gitlab/gitlab.rb
+
+# Replace the default sysctl.rb with ours (read comments in file)
 COPY conf/sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/sysctl.rb
 
 # Wrapper to trigger runit and reconfigure GitLab
