@@ -16,8 +16,8 @@ oc volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/etc/gitlab \
-    --name=gitlab-etc \
     --claim-name=gitlab-etc \
+    --name=gitlab-etc \
     --overwrite
 
 # Create volume /var/opt/gitlab
@@ -25,8 +25,8 @@ oc volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/var/opt/gitlab \
-    --name=gitlab-var-opt \
     --claim-name=gitlab-var-opt \
+    --name=gitlab-var-opt \
     --overwrite
 
 # Create volume /var/log/gitlab
@@ -34,6 +34,6 @@ oc volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/var/log/gitlab \
-    --name=gitlab-var-log \
     --claim-name=gitlab-var-log \
+    --name=gitlab-var-log \
     --overwrite

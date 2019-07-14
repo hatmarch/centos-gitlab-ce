@@ -2,10 +2,55 @@
 
 set -e
 
+function sigterm_handler() {
+    echo "SIGTERM signal received, try to gracefully shutdown all services..."
+    gitlab-ctl stop
+}
+
+function clean_stale_pids() {
+    # cleanup known pid/socket files
+    for x in /opt/gitlab/sv /run $(ls -d /tmp/gitaly-ruby* 2>/dev/null) ; do
+        # find
+        #  - any (s)ocket or regular (f)ile
+        #  - by the name of "*.pid" or "socket.?"
+        #  - and delete them
+        find $x \
+            \( \
+              -type f \
+              -o -type s \
+            \) \(\
+              -name pid \
+              -o -name "*.pid" \
+              -o -name "socket.?" \
+            \) \
+            -delete ;
+    done
+}
+
+function detect_unclean_start() {
+    set +e
+    echo "Cleaning stale PIDs & sockets"
+    clean_stale_pids
+    set -e
+}
+
+trap "sigterm_handler; exit" TERM
+
+echo "Thank you for using GitLab Docker Image!"
+echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.docker.com/r/tyrell/centos-gitlab-ce"
+sleep 3s
+
+# Run unclean start detection & cleanup
+detect_unclean_start
+
 # Start service manager
 echo "Starting services..."
 GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
 sleep 3s
 gitlab-ctl start
 
-exec "$@"
+# Tail all logs
+gitlab-ctl tail &
+
+# Wait for SIGTERM
+wait
