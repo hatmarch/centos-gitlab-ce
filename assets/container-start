@@ -7,10 +7,4 @@ echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.doc
 
 # Start service manager
 echo "Starting services..."
-GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
-
-# Start GitLab
-gitlab-ctl start
-
-# Tail all logs
-gitlab-ctl tail
+GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start

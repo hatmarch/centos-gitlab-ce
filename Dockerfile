@@ -62,14 +62,14 @@ RUN usermod -a -G 0 git && \
     /assets/fix-permissions /etc/gitlab && \
     /assets/fix-permissions /opt/gitlab
 
-# Container ENTRYPOINT
-ENTRYPOINT ["assets/container-entrypoint"]
-
-# Run our start script
-CMD ["/assets/container-start"]
-
 #############################################
 # Change user from 'root' to 'git 1007'
 # as we do not need root after this point
 #############################################
 USER 1007
+
+# Container ENTRYPOINT
+ENTRYPOINT ["assets/container-entrypoint"]
+
+# Run our start script
+CMD ["/assets/container-start"]

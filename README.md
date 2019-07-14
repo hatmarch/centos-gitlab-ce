@@ -20,6 +20,13 @@ Run the image locally by enabling the required ports and volumes as below (repla
 
   `docker run -i -t -v /Users/tyrell/git/centos-gitlab-ce/host_directories/etc/gitlab:/etc/gitlab -v /Users/tyrell/git/centos-gitlab-ce/host_directories/var/opt/gitlab:/var/opt/gitlab -v /Users/tyrell/git/centos-gitlab-ce/host_directories/var/log/gitlab:/var/log/gitlab -p 127.0.0.1:80:80/tcp -p 127.0.0.1:443:443/tcp tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64 /bin/bash`
 
+Once the image is running, use docker exec to enter into the image for verification.
+
+Tyrells-MacBook-Air:~ tyrell$ docker ps
+CONTAINER ID        IMAGE                                            COMMAND                  CREATED              STATUS              PORTS                                                  NAMES
+6ff0c9f9f6f1        tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64   "assets/container-en…"   About a minute ago   Up About a minute   127.0.0.1:80->80/tcp, 22/tcp, 127.0.0.1:443->443/tcp   modest_mestorf
+
+Tyrells-MacBook-Air:~ tyrell$ docker exec -it 6ff0c9f9f6f1 /bin/bash
 
 ### Running this image in Openshift
 
