@@ -14,6 +14,12 @@ This project contains a Docker image that can be used as a base image to create 
 
       `docker push <your-docker-repo>/centos-gitlab-ce:latest`
 
+### Running this image locally
+
+Run the image locally by enabling the required ports and volumes as below (replace host directories with your own).
+
+  `docker run -i -t -v /Users/tyrell/git/centos-gitlab-ce/host_directories/etc/gitlab:/etc/gitlab -v /Users/tyrell/git/centos-gitlab-ce/host_directories/var/opt/gitlab:/var/opt/gitlab -v /Users/tyrell/git/centos-gitlab-ce/host_directories/var/log/gitlab:/var/log/gitlab -p 127.0.0.1:80:80/tcp tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64 /bin/bash`
+
 
 ### Running this image in Openshift
 
