@@ -57,8 +57,11 @@ RUN chgrp -R 0 /var/opt/gitlab && \
 
 # Add git user to root group and Update permissions to fix directory permission issues
 RUN usermod -a -G 0 git && \
-    usermod -a -G wheel git && \
-    /assets/update-permissions
+    /assets/update-permissions && \
+    /assets/fix-permissions /var/opt/gitlab && \
+    /assets/fix-permissions /var/log/gitlab && \
+    /assets/fix-permissions /etc/gitlab && \
+    /assets/fix-permissions /opt/gitlab
 
 HEALTHCHECK --interval=60s --timeout=30s --retries=5 \
 CMD /opt/gitlab/bin/gitlab-healthcheck --fail --max-time 10
@@ -70,4 +73,4 @@ ENTRYPOINT ["/assets/container-start"]
 # Change user from 'root' to 'git 1007'
 # as we do not need root after this point
 #############################################
-#USER 1007
+USER 1007
