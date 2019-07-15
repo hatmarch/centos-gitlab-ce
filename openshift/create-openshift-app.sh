@@ -12,7 +12,7 @@ oc new-app tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64 \
     --name=gitlab-ce
 
 # Create volume /etc/gitlab
-oc volume dc/gitlab-ce --add \
+oc set volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/etc/gitlab \
@@ -21,7 +21,7 @@ oc volume dc/gitlab-ce --add \
     --overwrite
 
 # Create volume /var/opt/gitlab
-oc volume dc/gitlab-ce --add \
+oc set volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/var/opt/gitlab \
@@ -30,7 +30,7 @@ oc volume dc/gitlab-ce --add \
     --overwrite
 
 # Create volume /var/log/gitlab
-oc volume dc/gitlab-ce --add \
+oc set volume dc/gitlab-ce --add \
     --type=persistentVolumeClaim \
     --claim-size=1Gi \
     --mount-path=/var/log/gitlab \
