@@ -5,6 +5,10 @@ set -e
 echo "Thank you for using GitLab Docker Image!"
 echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.docker.com/r/tyrell/centos-gitlab-ce"
 
+echo "Tailing logs"
+touch /var/log/gitlab/dummy.log
+gitlab-ctl tail &
+
 # Start service manager
 echo "Starting services..."
 GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start
