@@ -36,9 +36,6 @@ EXPOSE 443 80 22
 # Resolve error: TERM environment variable not set.
 ENV TERM xterm
 
-# Define data volumes
-VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
-
 # Replace the default sysctl.rb with ours (read comments in file)
 COPY conf/sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/sysctl.rb
 
