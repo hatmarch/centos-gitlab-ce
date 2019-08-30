@@ -18,6 +18,11 @@ VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 # Change user from 'root' to 'git 1007'
 # as we do not need root after this point
 #############################################
+USER root
+
+# RUN yum update -y 
+RUN yum install sudo -y && yum install net-tools -y
+
 USER 1007
 
 # Container ENTRYPOINT

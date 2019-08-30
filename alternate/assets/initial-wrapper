@@ -8,7 +8,7 @@ function sigterm_handler() {
 }
 
 function failed_pg_upgrade() {
-    echo 'Upgrading the existing database to 9.6 failed and was reverted.'
+    echo 'Upgrading the existing database to 10 failed and was reverted.'
     echo 'Please check the output, and open an issue at:'
     echo 'https://gitlab.com/gitlab-org/omnibus-gitlab/issues'
     echo 'If you would like to restart the instance without attempting to'
@@ -37,12 +37,6 @@ function clean_stale_pids() {
     done
 }
 
-function create_srv_symlinks() {
-  for x in $(ls /opt/gitlab/sv) ; do
-    ln -s /opt/gitlab/sv/$x /opt/gitlab/service/$x ;
-  done
-}
-
 function detect_unclean_start() {
     set +e
     echo "Cleaning stale PIDs & sockets"
@@ -52,8 +46,8 @@ function detect_unclean_start() {
 
 trap "sigterm_handler; exit" TERM
 
+source /RELEASE
 echo "Thank you for using GitLab Docker Image!"
-echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.docker.com/r/tyrell/centos-gitlab-ce"
 echo "Current version: $RELEASE_PACKAGE=$RELEASE_VERSION"
 echo ""
 if [[ "$PACKAGECLOUD_REPO" == "unstable" ]]; then
@@ -106,7 +100,7 @@ fi
 
 # Remove all services, the reconfigure will create them
 echo "Preparing services..."
-create_srv_symlinks
+rm -f /opt/gitlab/service/*
 ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
 ln -sf /opt/gitlab/embedded/bin/sv /opt/gitlab/init/sshd
 mkdir -p /var/run/sshd
@@ -118,12 +112,7 @@ echo "Starting services..."
 GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
 
 echo "Configuring GitLab..."
-gitlab-ctl start
-
-if [ -n "${GITLAB_POST_RECONFIGURE_SCRIPT+x}" ]; then
-  echo "Running Post Reconfigure Script..."
-  eval "${GITLAB_POST_RECONFIGURE_SCRIPT}"
-fi
+gitlab-ctl reconfigure
 
 # Make sure PostgreSQL is at the latest version.
 # If it fails, print a message with a workaround and exit
@@ -138,8 +127,4 @@ if [ -n "${GITLAB_POST_RECONFIGURE_SCRIPT+x}" ]; then
   eval "${GITLAB_POST_RECONFIGURE_SCRIPT}"
 fi
 
-# Tail all logs
-gitlab-ctl tail &
-
-# Wait for SIGTERM
-wait
+gitlab-ctl stop

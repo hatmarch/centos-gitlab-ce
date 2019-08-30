@@ -104,21 +104,26 @@ if [[ ! -f /etc/gitlab/ssh_host_ed25519_key ]]; then
 	chmod 0600 /etc/gitlab/ssh_host_ed25519_key
 fi
 
-# Remove all services, the reconfigure will create them
-echo "Preparing services..."
-create_srv_symlinks
-ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
-ln -sf /opt/gitlab/embedded/bin/sv /opt/gitlab/init/sshd
-mkdir -p /var/run/sshd
-mkdir -p /var/log/gitlab/sshd
-mkdir -p /var/log/gitlab/reconfigure
+# Populate mounted directories if necessary
+if [ "$(ls -A /etc/gitlab)" ]; then
+  echo "/etc/gitlab has data"
+else
+  cd /
+  echo "Populating /etc/gitlab..."
+  tar -xvf /assets/gitlab.etc.tar.gz
+fi
 
-# Start service manager
-echo "Starting services..."
+if [ "$(ls -A /var/opt/gitlab)" ]; then
+  echo "/var/opt/gitlab has data"
+else
+  cd /
+  echo "Populating /var/opt/gitlab..."
+  tar -xvf /assets/gitlab.opt.tar.gz
+fi
+
+echo "starting GitLab..."
 GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
-
-echo "Configuring GitLab..."
-gitlab-ctl start
+gitlab-ctl restart
 
 if [ -n "${GITLAB_POST_RECONFIGURE_SCRIPT+x}" ]; then
   echo "Running Post Reconfigure Script..."
