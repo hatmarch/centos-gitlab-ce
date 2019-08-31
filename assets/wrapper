@@ -120,7 +120,7 @@ if [ "$(ls -A /etc/gitlab)" ]; then
 else
   cd /
   echo "Populating /etc/gitlab..."
-  tar -xvf /assets/gitlab.etc.tar.gz
+  tar --same-owner -xvf /assets/gitlab.etc.tar.gz
 fi
 
 if [ "$(ls -A /var/opt/gitlab)" ]; then
@@ -128,7 +128,7 @@ if [ "$(ls -A /var/opt/gitlab)" ]; then
 else
   cd /
   echo "Populating /var/opt/gitlab..."
-  tar -xvf /assets/gitlab.opt.tar.gz
+  tar --same-owner -xvf /assets/gitlab.opt.tar.gz
 fi
 
 # Start service manager
