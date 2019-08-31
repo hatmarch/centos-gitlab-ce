@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-resource_name :sysctl
-provides :sysctl
+resource_name :gitlab_sysctl
+provides :gitlab_sysctl
 
 actions :create
 default_action :create
@@ -42,19 +42,19 @@ action :create do
     notifies :run, "execute[load sysctl conf #{new_resource.name}]", :immediately
   end
 
-  # Remove old (not-used) configs
-  [
-    "/etc/sysctl.d/90-postgresql.conf",
-    "/etc/sysctl.d/90-unicorn.conf",
-    "/opt/gitlab/embedded/etc/90-omnibus-gitlab.conf",
-    "/etc/sysctl.d/90-omnibus-gitlab.conf"
-  ].each do |conf|
-    file "delete #{conf} #{new_resource.name}" do
-      path conf
-      action :delete
-      only_if { ::File.exist?(conf) }
-    end
-  end
+  # # Remove old (not-used) configs
+  # [
+  #   "/etc/sysctl.d/90-postgresql.conf",
+  #   "/etc/sysctl.d/90-unicorn.conf",
+  #   "/opt/gitlab/embedded/etc/90-omnibus-gitlab.conf",
+  #   "/etc/sysctl.d/90-omnibus-gitlab.conf"
+  # ].each do |conf|
+  #   file "delete #{conf} #{new_resource.name}" do
+  #     path conf
+  #     action :delete
+  #     only_if { ::File.exist?(conf) }
+  #   end
+  # end
 
   # Load the settings right away
   execute "load sysctl conf #{new_resource.name}" do

@@ -106,19 +106,35 @@ fi
 
 # Remove all services, the reconfigure will create them
 echo "Preparing services..."
-create_srv_symlinks
+# create_srv_symlinks
+rm -f /opt/gitlab/service/*
 ln -s /opt/gitlab/sv/sshd /opt/gitlab/service
 ln -sf /opt/gitlab/embedded/bin/sv /opt/gitlab/init/sshd
 mkdir -p /var/run/sshd
 mkdir -p /var/log/gitlab/sshd
 mkdir -p /var/log/gitlab/reconfigure
 
-# Start service manager
-echo "Starting services..."
-GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
+# Populate mounted directories if necessary
+if [ "$(ls -A /etc/gitlab)" ]; then
+  echo "/etc/gitlab has data"
+else
+  cd /
+  echo "Populating /etc/gitlab..."
+  tar -xvf /assets/gitlab.etc.tar.gz
+fi
 
-echo "Configuring GitLab..."
-gitlab-ctl start
+if [ "$(ls -A /var/opt/gitlab)" ]; then
+  echo "/var/opt/gitlab has data"
+else
+  cd /
+  echo "Populating /var/opt/gitlab..."
+  tar -xvf /assets/gitlab.opt.tar.gz
+fi
+
+# Start service manager
+echo "Starting Gitlab..."
+GITLAB_OMNIBUS_CONFIG= /opt/gitlab/embedded/bin/runsvdir-start &
+gitlab-ctl restart
 
 if [ -n "${GITLAB_POST_RECONFIGURE_SCRIPT+x}" ]; then
   echo "Running Post Reconfigure Script..."
