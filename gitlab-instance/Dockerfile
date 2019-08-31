@@ -1,4 +1,5 @@
-FROM tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64
+# FROM tyrell/centos-gitlab-ce:12.0.3-ce.0.el7.x86_64
+FROM mhildema/tyrell-gitlab-base:v1
 
 # This is a base image with a GitLab CE default install up and running.
 MAINTAINER Tyrell Perera <tyrell.perera@gmail.com>
@@ -12,7 +13,7 @@ COPY gitlab.rb /etc/gitlab/gitlab.rb
 EXPOSE 443 80 22
 
 # Define data volumes
-VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
+# VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
 #############################################
 # Change user from 'root' to 'git 1007'

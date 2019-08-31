@@ -37,7 +37,7 @@ EXPOSE 443 80 22
 ENV TERM xterm
 
 # Replace the default sysctl.rb with ours (read comments in file)
-COPY conf/sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/sysctl.rb
+COPY conf/gitlab_sysctl.rb /opt/gitlab/embedded/cookbooks/package/resources/gitlab_sysctl.rb
 
 # Wrapper to trigger runit and reconfigure GitLab
 RUN /assets/wrapper
