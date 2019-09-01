@@ -15,6 +15,11 @@ external_url "http://#{host}"
 # Explicitly disable init detection since we are running on a container
 package['detect_init'] = false
 
+# external connections need to be in the root group to have access to the 
+# git-workhorse socket at /var/opt/gitlab/gitlab-workhorse/socket
+# when gitlab-ctl reconfigure is called, this will update conf/nginx.conf 
+web_server['group'] = 'root'
+
 # Load custom config from environment variable: GITLAB_OMNIBUS_CONFIG
 # Disabling the cop since rubocop considers using eval to be security risk but
 # we don't have an easy way out, atleast yet.

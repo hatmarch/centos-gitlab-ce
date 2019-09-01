@@ -53,6 +53,9 @@ if id -u git; then
 	chown_if_exists -R git:git /var/log/gitlab/gitlab-rails/*.log
 	chown_if_exists -R git:git /var/log/gitlab/gitlab-shell/*.log
 	chown_if_exists -R git:git /var/log/gitlab/unicorn/*.log
+
+	# update etc
+	chown_if_exists -R git:root /etc/gitlab
 fi
 
 # Fix nginx buffering directory permission
@@ -65,6 +68,7 @@ fi
 if id -u gitlab-psql; then
 	chown_if_exists -R gitlab-psql:gitlab-psql /var/opt/gitlab/postgresql
 	chown_if_exists gitlab-psql /var/log/gitlab/postgresql
+	chmod_if_exists 0700 /var/opt/gitlab/postgresql/data
 fi
 
 # Fix prometheus storage and logs
@@ -93,3 +97,7 @@ fi
 if id -u mattermost; then
     chown_if_exists -R mattermost /var/opt/gitlab/mattermost
 fi
+
+# Fix narrow permissions needed for ssh keys
+find /etc/gitlab -name "ssh*key" -exec chmod 0600 {} \;
+find /var -name "*.key" -exec chmod 0600 {} \;

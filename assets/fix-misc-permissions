@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# postgresql requires these permissions on the data dir
+chmod 0700 /var/opt/gitlab/postgresql/data
+
+# gitlab checks the owner of this directory
+chown git /etc/gitlab
+
+# narrow permissions for ssh keys
+find /etc/gitlab -name "ssh*key" -exec chmod 0600 {} \;
+find /var -name "*.key" -exec chmod 0600 {} \;

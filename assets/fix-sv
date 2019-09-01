@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Fix the services to run in the root group (where applicable)
+echo "fixing group context for service's run files (chpst)"
+find /opt/gitlab/sv/ -name "run" -exec sed -i -r 's/(-[Uu] [^:]+):([^ ]+) /\1:root /mg' {} \;

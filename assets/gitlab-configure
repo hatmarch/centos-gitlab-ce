@@ -1,11 +1,8 @@
 #!/bin/bash
 
-set -e
+# NOTE: This likely needs to be run as root to work properly
 
-function sigterm_handler() {
-    echo "SIGTERM signal received, try to gracefully shutdown all services..."
-    gitlab-ctl stop
-}
+set -e
 
 function failed_pg_upgrade() {
     echo 'Upgrading the existing database to 9.6 failed and was reverted.'
@@ -43,8 +40,6 @@ function detect_unclean_start() {
     clean_stale_pids
     set -e
 }
-
-trap "sigterm_handler; exit" TERM
 
 echo "Thank you for using GitLab Docker Image!"
 echo "This GitLab Docker Image is maintained by Tyrell Perera at https://hub.docker.com/r/tyrell/centos-gitlab-ce"

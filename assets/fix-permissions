@@ -30,7 +30,7 @@ test $# -eq 0 && usage "no DIR specified"
 for dir; do
     test -d "$dir" || usage "no such directory '$dir'"
     echo >&2 "fixing permissions on '$dir' directory"
-    find "$dir" -exec chown "$uid:0" {} \;
+    find "$dir" -exec chgrp 0 {} \;
     find "$dir" -exec chmod "g+r$write" {} \;
-    find "$dir" -type d -exec chmod g+x {} +
+    find "$dir" -type d -exec chmod g+x {} \;
 done

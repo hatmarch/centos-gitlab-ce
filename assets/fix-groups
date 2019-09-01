@@ -1,0 +1,9 @@
+#!/bin/sh
+
+#for user in $(cat /etc/passwd | grep /var/opt/gitlab | cut -d: -f1); do
+for user in $(cat /etc/passwd | cut -d: -f1); do
+    echo "Adjusting groups for user $user"
+
+    # add user in question to the (secondary) group of root (use -g to make it their primary)
+    usermod -aG root $user
+done
