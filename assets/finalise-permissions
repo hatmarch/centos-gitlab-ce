@@ -1,9 +1,10 @@
 #!/bin/sh
+# Finish out the permission updates with some very specific permission requirements
 
 # postgresql requires these permissions on the data dir
 chmod 0700 /var/opt/gitlab/postgresql/data
 
-# gitlab checks the owner of this directory
+# gitlab checks the owner of this directory is 'git'
 chown git /etc/gitlab
 
 # narrow permissions for ssh keys

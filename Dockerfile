@@ -58,7 +58,8 @@ RUN /assets/fix-groups && \
     /assets/fix-permissions /var/log/gitlab && \
     /assets/fix-permissions /etc/gitlab && \
     /assets/fix-permissions /opt/gitlab && \
-    /assets/fix-sv
+    /assets/fix-sv && \
+    /assets/finalise-permissions
 
 #############################################
 # Change user from 'root' to 'git 1007'

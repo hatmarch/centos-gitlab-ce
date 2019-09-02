@@ -68,7 +68,6 @@ fi
 if id -u gitlab-psql; then
 	chown_if_exists -R gitlab-psql:gitlab-psql /var/opt/gitlab/postgresql
 	chown_if_exists gitlab-psql /var/log/gitlab/postgresql
-	chmod_if_exists 0700 /var/opt/gitlab/postgresql/data
 fi
 
 # Fix prometheus storage and logs
@@ -97,7 +96,3 @@ fi
 if id -u mattermost; then
     chown_if_exists -R mattermost /var/opt/gitlab/mattermost
 fi
-
-# Fix narrow permissions needed for ssh keys
-find /etc/gitlab -name "ssh*key" -exec chmod 0600 {} \;
-find /var -name "*.key" -exec chmod 0600 {} \;
