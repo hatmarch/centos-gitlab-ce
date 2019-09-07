@@ -65,7 +65,7 @@ RUN /assets/fix-groups && \
 # Change user from 'root' to 'git 1007'
 # as we do not need root after this point
 #############################################
-USER 1007
+# USER 1007
 
 # Container ENTRYPOINT
 ENTRYPOINT ["assets/container-entrypoint"]

@@ -12,6 +12,9 @@ EXPOSE 443 80 22
 # Define data volumes
 # VOLUME ["/etc/gitlab", "/var/opt/gitlab", "/var/log/gitlab"]
 
+COPY fix-sv-temp /assets
+RUN /assets/fix-sv-temp
+
 #############################################
 # Change user from 'root' to 'git 1007'
 # as we do not need root after this point
@@ -19,7 +22,7 @@ EXPOSE 443 80 22
 USER 1007
 
 # DEBUG: for testing, see if we can get root to run (permission errors otherwise)
-USER root
+# USER root
 
 # Container ENTRYPOINT
 ENTRYPOINT ["assets/container-entrypoint"]

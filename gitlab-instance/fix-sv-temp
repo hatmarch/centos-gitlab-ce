@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# FOR DEBUGGING ONLY
+# yum install -y net-tools openssh-clients
+
+# Fix the services not to assume a role
+#echo "fixing group context for service's run files (chpst)"
+#find /opt/gitlab/sv/ -name "run" -exec sed -i -r 's/(-[Uu] [^:]+):([^ ]+) //mg' {} \;
+#chmod 0770 /var/opt/gitlab/postgresql/data
+chmod 0700 /var/opt/gitlab/postgresql/data
+#chmod 0770 /run
+
+#find /etc/gitlab -name "ssh*key" -exec chmod 0660 {} \;
+#find /var -name "*.key" -exec chmod 0660 {} \;
+
+# set capabilities on executables to attempt to allow binding to lower ports
+setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/sshd
+setcap CAP_NET_BIND_SERVICE=+eip /opt/gitlab/embedded/sbin/nginx
+setcap CAP_SETUID,CAP_SETGID=+eip /opt/gitlab/embedded/bin/chpst
