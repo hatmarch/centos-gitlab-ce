@@ -8,6 +8,10 @@ node_exporter['enable'] = false
 # Manage accounts with docker
 manage_accounts['enable'] = false
 
+# Under restricted permissions, prometheus won't be able to list nodes at the cluster scope: no RBAC policy matched"
+# and will get the error: Failed to list *v1.Node: nodes is forbidden: User \"system:serviceaccount:test-gitlab:default\" 
+prometheus_monitoring['enable'] = false
+
 # Get hostname from shell
 host = `hostname`.strip
 external_url "http://#{host}"

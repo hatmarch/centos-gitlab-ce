@@ -1,0 +1,46 @@
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: false
+allowedCapabilities: null
+apiVersion: security.openshift.io/v1
+defaultAddCapabilities: null
+fsGroup:
+  type: MustRunAs
+groups:
+- system:authenticated
+kind: SecurityContextConstraints
+metadata:
+  annotations:
+    kubernetes.io/description: restricted denies access to all host features and requires
+      pods to be run with a UID, and SELinux context that are allocated to the namespace.  This is slightly less 
+      restrictive than "restricted" scc as it allows SETUID and SETGID capabilities
+  creationTimestamp: "2019-08-09T07:14:12Z"
+  name: restricted-uid-gid
+#  resourceVersion: "685"
+  selfLink: /apis/security.openshift.io/v1/securitycontextconstraints/restricted-uid-gid
+  uid: 49e17228-ba75-11e9-88a6-080027f3d19a
+priority: null
+readOnlyRootFilesystem: false
+requiredDropCapabilities:
+- KILL
+- MKNOD
+# allow certain processes to have SETUID and SETGID capabilities
+runAsUser:
+  type: MustRunAsRange
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: RunAsAny
+users: 
+- lowlyworm
+volumes:
+- configMap
+- downwardAPI
+- emptyDir
+- persistentVolumeClaim
+- projected
+- secret

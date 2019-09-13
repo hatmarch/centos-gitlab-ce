@@ -1,0 +1,30 @@
+# Running under modified restricted 
+
+Create a user that will be assigned the modified restricted scc (as a cluster admin)
+
+----
+$ oc create user lowlyworm
+user.user.openshift.io/lowlyworm created
+----
+
+Add the policy to the OpenShift cluster
+
+----
+$ oc create -f gitlab-instance/restricted_uid_gid.scc.yaml 
+securitycontextconstraints.security.openshift.io/restricted-uid-gid created
+----
+
+Whilst pointing into the OpenShift cluster docker image registry, build the gitlab-instance/Dockerfile and the base Dockerfile on which this dockerfile relies
+
+----
+$ docker build --no-cache -t mhildema/tyrell-gitlab-base:v3 .
+....
+Successfully built fa74a7386e8c
+Successfully tagged mhildema/tyrell-gitlab-base:v3
+$ cd gitlab-instance
+$ docker build --no-cache -t mhildema/tyrell-gitlab:v3 .
+$ 
+
+# TODO docker push to image stream (with )
+# docker tag 40eefe 192.168.99.100:5000/test-gitlab/myimage:latest
+# docker push 192.168.99.100:5000/test-gitlab/myimage
